@@ -804,6 +804,38 @@ If you want to install one of the suggested instructions files, run the followin
 install the springboot.instructions.md file
 ```
 
+</div>
+
+<div data-visible="$$copilot_app$$">
+
+**Install from the GitHub Copilot app**
+
+Open the [Awesome Copilot catalog](https://awesome-copilot.github.com/), select **Plugins**, and search for **awesome-copilot**. On the [plugin details page](https://awesome-copilot.github.com/plugin/awesome-copilot/), select **Open in GitHub Copilot app** and confirm the installation.
+
+In the app's **Plugins** view, expand the **awesome-copilot** marketplace and confirm that the **awesome-copilot** plugin is enabled.
+
+Open the **Skills** tab and filter by this plugin to view the three skills for finding relevant community instructions, agents, and skills:
+
+- `suggest-awesome-github-copilot-instructions`
+- `suggest-awesome-github-copilot-agents`
+- `suggest-awesome-github-copilot-skills`
+
+Run the following prompt to find community instructions for Java and Spring Boot coding standards in a side session:
+
+> **Note:** `/side` starts a side session for the prompt that follows, keeping this lookup separate from your main modernization conversation.
+
+```text
+/side /awesome-copilot:suggest-awesome-github-copilot-instructions java and springboot coding standards
+```
+![alt text](assets/java-spring-instructions.png)
+Review the suggestions. If `springboot.instructions.md` is among them, ask Copilot to install it:
+
+```text
+Install the suggested springboot.instructions.md file in .github/instructions/. Preserve existing project guidance and ask before overwriting any files.
+```
+
+</div>
+
 ## Step 2: Prepare your project for AI
 
 We want to optimize out project for AI development, ensuring that all necessary instructions files are installed and the project structure aligns with the guidelines provided by the Awesome Copilot skills.
@@ -815,6 +847,8 @@ There is plenty of Skills available that can help achieve that. Here are a few s
 We will start by installing a first skill, named `AI-Ready` created by John Papa.
 
 This can be install through a dedicated plugin available in the Awesome Copilot marketplace.
+
+<div data-visible="$$copilot_cli$$">
 
 ```bash
 /plugin install ai-ready@awesome-copilot
@@ -833,6 +867,28 @@ It will automatically create a main instructions file to add precise contexte fo
 ![AI Ready Process completed](assets/cli-ai-ready-process.png)
 
 </div>
+
+<div data-visible="$$copilot_app$$">
+
+Open the [Awesome Copilot catalog](https://awesome-copilot.github.com/), select **Plugins**, and search for **ai-ready**. [Open the plugin details page](https://awesome-copilot.github.com/plugin/ai-ready/), select **Open in GitHub Copilot app**, and confirm the installation.
+
+In the app's **Plugins** view, expand the **awesome-copilot** marketplace and confirm that the **ai-ready** plugin is enabled. Open the **Skills** tab and filter by this plugin to view its available skills.
+
+In a session for this repository, send the following prompt:
+
+```text
+/side Make this repo ai ready to prepare for code modernization according to @.github/modernize.plan.md
+```
+
+The skill analyzes the repository and modernization plan to identify relevant files, project structure, coding conventions, and rules. It can create or update instructions and suggest additional prompts and skills as needed.
+
+Before continuing, review the generated guidance and keep it concise and relevant to the planned migration. Ensure the accepted changes are available in the branch or worktree used by subsequent modernization sessions.
+
+![AI Ready Process completed](assets/app-ai-ready-process.png)
+
+</div>
+
+<div data-visible="$$copilot_cli$$">
 
 ## Step 3: Use copilot to install all necessary skills
 
@@ -853,14 +909,13 @@ Once the process is complete, you can simply choose the skills you want to insta
 
 Guardrails are essential to improve the quality and reliability with AI-driven development processes but keep in mind that **every instructions file and skills you add** will be integrated into the context sent with your Copilot requests, **consuming tokens**. Keep it clean and concise and don't overload it with unnecessary information.
 
+</div>
+
 <div class="info" data-title="Tip">
 
 > Some skills can help reduce you tokens consumption by installing the `caveman` instructions files or the `steno` skill from Awesome Copilot.
 
 </div>
-
-
-
 
 ---
 
