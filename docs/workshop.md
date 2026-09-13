@@ -1264,6 +1264,8 @@ This is pretty cool but what if you have a last minute opportunity to present yo
 
 Let's see how GitHub Copilot can help you handle that!
 
+<div data-visible="$$copilot_cli$$">
+
 First, you will need to add the `anthropic/skills` marketplace and install the `document` plugin:
 
 ```bash
@@ -1271,12 +1273,32 @@ First, you will need to add the `anthropic/skills` marketplace and install the `
 /plugin install document-skills@anthropic-agent-skills
 ```
 
+</div>
+
+<div data-visible="$$copilot_app$$">
+
+First, add the `anthropics/skills` marketplace and install the `document-skills` plugin:
+
+Select **Customize** in the left sidebar to open the app's customization settings.
+
+![GitHub Copilot app sidebar with Customize highlighted](assets/github-app-customize.png)
+
+Open the **Plugins** tab. Under **Available**, select the gear icon next to the marketplace filter to open **Manage marketplaces**. Enter `anthropics/skills` in the **Source** field and select **Add**. If **anthropic-agent-skills** is already listed, you can skip adding it again.
+
+![GitHub Copilot app Manage marketplaces dialog for adding a plugin source](assets/manage-marketplace.png)
+
+Close the dialog and search for `document-skills` in the **Plugins** tab. Select **Install** for the plugin from **anthropic-agent-skills**, then confirm that it appears under **Installed** with its toggle enabled, as shown below.
+
+![GitHub Copilot app Plugins view with document-skills installed and enabled](assets/document-skills.png)
+
+</div>
+
 This plugin add capabilities to generate documents such as Excel, Word, PowerPoint, and PDF.
 
 Now switch to `autopilot` mode and ask to copilot to generate the PPT for you:
 
 ```bash
-Using the files in @.github/modernize and the sessions report, create a 4 slides PowerPoint presentation including the highlight of this migration, with all the technical and business impacts, add details on how we ensure quality and finish with a dashboard style final slide focused on the AI usage and cost for this migration. Use Playwright for adding screen capture. Make it modern and visually appealing.
+Using the files in @.github/modernize and the sessions report, and using document-skills anthropics/skills plugin create a 4 slides PowerPoint presentation including the highlight of this migration, with all the technical and business impacts, add details on how we ensure quality and finish with a dashboard style final slide focused on the AI usage and cost for this migration. Use Playwright for adding screen capture. Make it modern and visually appealing.
 ```
 
 Once finished open and review the document and you are ready to go!
