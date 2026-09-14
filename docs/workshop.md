@@ -153,14 +153,7 @@ Codespace.
 
 **Option 2: Use GitHub Copilot CLI locally**
 
-Install [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli),
-open a terminal in your forked repository, and run:
-
-```bash
-copilot
-```
-
-Sign in with the GitHub account that has access to Copilot when prompted.
+Install [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli).
 
 Clone the repo locally. Start from your repo on GitHub.com and select Code => Local => copy URL to clipboard
 ![copy repo path to clipboard](assets/cli-copy-repo-url.png)
@@ -171,6 +164,8 @@ git clone *the_repo_path*
 cd ghcp-agentic-modernisation-lab
 copilot
 ```
+
+Sign in with the GitHub account that has access to Copilot when prompted.
 
 </div>
 
@@ -624,7 +619,7 @@ You do not need to create the session or change its mode manually. From the comp
 </div>
 
 ```text
-First persist and commit the completed assessment artifact at @{{assessment_file_path}} so it is available to and can be read by the planning session. After that, create a new session for this repository in Plan mode, using Auto mode for model selection. In the new session, use assessment.md as the source of truth to create a prioritized, executable modernization plan for the Order Service. Preserve the validated target state and accepted recommendations recorded in this artifact. Include dependencies, risk, scope, and validation criteria for every task. Keep this assessment session unchanged and perform all planning in the new session.
+First persist and commit the completed assessment artifact at @./assessment/assessment.md so it is available to and can be read by the planning session. After that, create a new session for this repository in Plan mode, using Auto mode for model selection. In the new session, use assessment.md as the source of truth to create a prioritized, executable modernization plan for the Order Service. Preserve the validated target state and accepted recommendations recorded in this artifact. Include dependencies, risk, scope, and validation criteria for every task. Keep this assessment session unchanged and perform all planning in the new session.
 ```
 
 > **Note:** The prompt requests **Auto** mode for model selection, but you can instead select a reasoning model for planning the modernization.
@@ -659,7 +654,7 @@ First persist and commit the completed assessment artifact at @{{assessment_file
 
 ![Planning session confirming that plan.md and tasks.json were validated and saved](assets/approved-plan.png)
 
-> After approval, Copilot validates and saves the two planning artifacts, `plan.md` and `tasks.json`, in the repository's `.github/modernize/` directory. No modernization tasks are executed at this stage.
+> After approval, Copilot validates and saves the two planning artifacts, `plan.md` and `tasks.json`, under `.github/modernize/<plan-name>/`. No modernization tasks are executed at this stage.
 
 </div>
 
@@ -673,7 +668,7 @@ planning to the plugin's internal planning coordinator.
 Press `Shift+Tab` until the status line shows **Plan** mode (in blue), then enter:
 
 ```text
-Use @{{assesment_file_path}} as the source of truth to create a prioritized, executable modernization plan for the Order Service. Preserve the validated target state and accepted recommendations recorded in this artifact. Include dependencies, risk, scope, and validation criteria for every task. Do not implement the plan.
+Use @./assessment/assessment.md as the source of truth to create a prioritized, executable modernization plan for the Order Service. Preserve the validated target state and accepted recommendations recorded in this artifact. Include dependencies, risk, scope, and validation criteria for every task. Do not implement the plan.
 ```
 
 <div class="info" data-title="tip">
@@ -697,7 +692,7 @@ To open it in edit mode and make manual changes just do `ctrl+y` and you'll be a
 When the plan is ready, enter:
 
 ```text
-Persist the approved modernization plan as plan.md and tasks.json under .github/modernize/. Validate both artifacts and stop without executing any modernization task.
+Persist the approved modernization plan as plan.md and tasks.json under .github/modernize/<plan-name>/. Validate both artifacts and stop without executing any modernization task.
 ```
 
 <div data-visible="$$copilot_cli$$">
@@ -857,7 +852,7 @@ This can be install through a dedicated plugin available in the Awesome Copilot 
 Then simply launch the process by typing the following command:
 
 ```bash
-make this repo ai ready to prepare for code modernization according to @.github/modernize.plan.md
+make this repo ai ready to prepare for code modernization according to @.github/modernize/<plan-name>/plan.md
 ```
 
 The skill will run a complete analysis of your project, the plan and will try to optimize your project structure and configuration for AI development.
@@ -877,7 +872,7 @@ In the app's **Plugins** view, expand the **awesome-copilot** marketplace and co
 In a session for this repository, send the following prompt:
 
 ```text
-/side Make this repo ai ready to prepare for code modernization according to @.github/modernize.plan.md
+/side Make this repo ai ready to prepare for code modernization according to @.github/modernize/<plan-name>/plan.md
 ```
 
 The skill analyzes the repository and modernization plan to identify relevant files, project structure, coding conventions, and rules. It can create or update instructions and suggest additional prompts and skills as needed.
@@ -899,7 +894,7 @@ In order to improve the speed and efficiency of finding and installing the neces
 Open a new Copilot, ensure you are in `auto` model (or your choice of model), press `shift+tab` until you go in `autopilot` mode and start by typing this prompt:
 
 ```bash
-/fleet According to @.github/modernize/plan.md and help me find and install the most relevant skills to help migrate my project according to the best practices. First use the suggest-awesome-github-copilot-skills skill to analyse and find the best one. Let me choose and help me install it on my project.
+/fleet According to @.github/modernize/<plan-name>/plan.md and help me find and install the most relevant skills to help migrate my project according to the best practices. First use the suggest-awesome-github-copilot-skills skill to analyse and find the best one. Let me choose and help me install it on my project.
 ```
 
 **Autopilot mode** will launch multiple agents in parallel and you will be able to monitor it with the `/tasks` command during the process.
