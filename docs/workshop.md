@@ -162,7 +162,7 @@ copilot
 
 Sign in with the GitHub account that has access to Copilot when prompted.
 
-Clone the repo locally. Start from your repon on github.com and select Code => Local => copy url to clipboard
+Clone the repo locally. Start from your repo on GitHub.com and select Code => Local => copy URL to clipboard
 ![copy repo path to clipboard](assets/cli-copy-repo-url.png)
 
 And in target repo, open a new terminal and type:
@@ -342,9 +342,9 @@ Following the plugin repository's installation instructions, you should start by
 /plugin marketplace add github/awesome-copilot
 ```
 
-But if you try it for Awesome Copilot you should get a message that it's alread instaled by default. Just keep it in mind for other marketplaces in the future. A marketplace is a repo with a specific registry to distribute plugins, skills, and other useful resources. You can easily create your own or add other from various providers.
+But if you try this with Awesome Copilot, you should see a message that it's already installed by default. Keep this in mind for other marketplaces in the future. A marketplace is a repo with a specific registry to distribute plugins, skills, and other useful resources. You can create your own or add others from various providers.
 
-As the marketplace is already installed we can install our mordernization plugin immediately:
+Because the marketplace is already installed, we can install our modernization plugin immediately:
 
 ```bash
 /plugin install github-copilot-modernization@awesome-copilot
