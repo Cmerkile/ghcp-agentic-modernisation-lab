@@ -27,7 +27,7 @@ tags: Copilot, Modernization, Agentic, Code          # Required. Tags for filter
 
 # Agentic Code Migration with GitHub Copilot
 
-*Version 0.1 - July 2026*
+*Version 1 - September 2026*
 
 The goal of this workshop is to learn how to use GitHub Copilot to efficiently migrate and modernize large codebases with full agentic capabilities and enterprise-level guardrails to ensure code quality and security.
 
