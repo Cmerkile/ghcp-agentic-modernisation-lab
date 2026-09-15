@@ -111,7 +111,7 @@ There are different ways to get access to GitHub Copilot:
 
 ## Fork the repository
 
-This workshop uses the following GitHub Repository: *** link to the repo ***
+This workshop uses the following GitHub Repository: [Copilot Agentic Lab repository on GitHub](https://github.com/Philess/ghcp-agentic-modernisation-lab)
 
 This repository contains a code starter that will help you experiment all capabilities with GitHub Copilot. Take the time to look at the architecture design displayed.
 
@@ -741,9 +741,9 @@ Exactly as you onboard new team members, you should define and communicate the g
 
 GitHub Copilot can use custom agents Agents, Skills and Instructions to perform specific tasks with better accuracy.
 
-Agents let you give it a specific persona with built-in standards, like a code reviewer that enforces type hints and PEP 8, or a testing helper that writes pytest cases. You’ll see how the same prompt gets noticeably better results when handled by an agent with targeted instructions.
+Agents let you refine the persona with a goal, a methodology and built-in standards, like a code reviewer that enforces type hints, or a testing helper that writes pytest cases. You’ll see how the same prompt gets noticeably better results when handled by an agent with targeted instructions.
 
-Skills encapsulate reusable logic, while instructions guide the agents on how to use these skills effectively. 
+Skills encapsulate reusable logic, mixing prompt and code, with instructions guiding the agents on how to use these skills effectively. 
 
 Instructions files contain the guidance that is automatically followed by the agents and we will use it to define specific context and rules about our project.
 
