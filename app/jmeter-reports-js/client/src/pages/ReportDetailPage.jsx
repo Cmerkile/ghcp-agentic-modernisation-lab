@@ -4,6 +4,8 @@ import { formatBytes, formatDateTime, formatDuration, formatMs } from '../servic
 import MetricCard from '../components/MetricCard.jsx'
 import TimelineChart from '../components/TimelineChart.jsx'
 import SampleTable from '../components/SampleTable.jsx'
+import DonutChart from '../components/DonutChart.jsx'
+import Icon from '../components/Icon.jsx'
 
 export default function ReportDetailPage({ id }) {
   const [report, setReport] = useState(null)
@@ -70,7 +72,8 @@ export default function ReportDetailPage({ id }) {
   return (
     <section className="page">
       <a className="back-link" href="#/reports">
-        ← Back to reports
+        <Icon name="back" size={16} />
+        Back to reports
       </a>
       <h2>{report.fileName}</h2>
       <p className="page-intro">
@@ -79,21 +82,31 @@ export default function ReportDetailPage({ id }) {
         {report.skippedRows > 0 && ` · ${report.skippedRows} unreadable rows skipped`}
       </p>
 
-      <div className="metric-grid">
-        <MetricCard label="Total requests" value={metrics.totalRequests.toLocaleString()} />
-        <MetricCard label="Successful" value={metrics.successCount.toLocaleString()} tone="good" />
-        <MetricCard
-          label="Failed"
-          value={metrics.errorCount.toLocaleString()}
-          tone={metrics.errorCount > 0 ? 'bad' : 'good'}
-        />
-        <MetricCard
-          label="Error rate"
-          value={`${metrics.errorRate}%`}
-          tone={metrics.errorRate > 0 ? 'bad' : 'good'}
-        />
-        <MetricCard label="Throughput" value={`${metrics.throughputPerSec}/s`} />
-        <MetricCard label="Test duration" value={formatDuration(metrics.durationMs)} />
+      <div className="overview">
+        <figure className="panel donut-panel tone-mint">
+          <figcaption>
+            <h3>Success vs failure</h3>
+            <span className="panel-sub">Share of requests across the whole run</span>
+          </figcaption>
+          <DonutChart success={metrics.successCount} failed={metrics.errorCount} />
+        </figure>
+
+        <div className="metric-grid overview-metrics">
+          <MetricCard label="Total requests" value={metrics.totalRequests.toLocaleString()} />
+          <MetricCard label="Successful" value={metrics.successCount.toLocaleString()} tone="good" />
+          <MetricCard
+            label="Failed"
+            value={metrics.errorCount.toLocaleString()}
+            tone={metrics.errorCount > 0 ? 'bad' : 'good'}
+          />
+          <MetricCard
+            label="Error rate"
+            value={`${metrics.errorRate}%`}
+            tone={metrics.errorRate > 0 ? 'bad' : 'good'}
+          />
+          <MetricCard label="Throughput" value={`${metrics.throughputPerSec}/s`} />
+          <MetricCard label="Test duration" value={formatDuration(metrics.durationMs)} />
+        </div>
       </div>
 
       <h3>Response time over the run</h3>

@@ -1,35 +1,15 @@
-import { useEffect, useState } from 'react'
-import { deleteReport, listReports } from '../services/api.js'
+import { useMemo } from 'react'
+import { deleteReport } from '../services/api.js'
+import { useReports } from '../services/useReports.js'
 import { formatBytes, formatDateTime, formatMs } from '../services/format.js'
 
-export default function ReportsPage() {
-  const [reports, setReports] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+export default function ReportsPage({ search = '' }) {
+  const { reports, setReports, loading, error, setError } = useReports()
 
-  useEffect(() => {
-    let cancelled = false
-    listReports()
-      .then((data) => {
-        if (!cancelled) {
-          setReports(data)
-          setError('')
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setError('Unable to load saved reports. Is the backend running?')
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false)
-        }
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const filtered = useMemo(() => {
+    const needle = search.trim().toLowerCase()
+    return needle ? reports.filter((r) => r.fileName.toLowerCase().includes(needle)) : reports
+  }, [reports, search])
 
   const onDelete = async (id) => {
     try {
@@ -42,8 +22,6 @@ export default function ReportsPage() {
 
   return (
     <section className="page">
-      <h2>Saved reports</h2>
-
       {loading && <p>Loading…</p>}
       {error && (
         <p className="alert error" role="alert">
@@ -51,14 +29,20 @@ export default function ReportsPage() {
         </p>
       )}
 
-      {!loading && !error && reports.length === 0 && (
+      {!loading && !error && filtered.length === 0 && (
         <p className="empty">
-          No report yet. <a href="#/upload">Import a .jtl file</a> to get started.
+          {reports.length === 0 ? (
+            <>
+              No report yet. <a href="#/upload">Import a .jtl file</a> to get started.
+            </>
+          ) : (
+            'No report matches your search.'
+          )}
         </p>
       )}
 
-      {reports.length > 0 && (
-        <div className="table-scroll stackable">
+      {filtered.length > 0 && (
+        <div className="panel table-scroll stackable">
           <table className="data-table stacking">
             <thead>
               <tr>
@@ -74,7 +58,7 @@ export default function ReportsPage() {
               </tr>
             </thead>
             <tbody>
-              {reports.map((report) => (
+              {filtered.map((report) => (
                 <tr key={report.id}>
                   <td className="cell-title" data-label="File">
                     <a href={`#/reports/${report.id}`}>{report.fileName}</a>

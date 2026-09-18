@@ -35,3 +35,32 @@ export function formatTime(value) {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? '—' : date.toLocaleTimeString()
 }
+
+/** Short, human friendly delay such as "3 min ago" or "2 d ago". */
+export function formatRelative(value, now = Date.now()) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return '—'
+  }
+  const seconds = Math.round((now - date.getTime()) / 1000)
+  if (seconds < 0) {
+    return 'just now'
+  }
+  const steps = [
+    [60, 'sec'],
+    [3600, 'min'],
+    [86400, 'h'],
+    [2592000, 'd'],
+  ]
+  if (seconds < 45) {
+    return 'just now'
+  }
+  for (let i = 0; i < steps.length; i += 1) {
+    const [limit, unit] = steps[i]
+    if (seconds < limit) {
+      const divisor = i === 0 ? 1 : steps[i - 1][0]
+      return `${Math.floor(seconds / divisor)} ${unit} ago`
+    }
+  }
+  return `${Math.floor(seconds / 2592000)} mo ago`
+}

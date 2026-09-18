@@ -12,9 +12,10 @@ app/jmeter-reports-js
 │   ├── public/                 Static assets served as-is (favicon)
 │   ├── src/
 │   │   ├── assets/             Stylesheet
-│   │   ├── components/         Reusable view pieces (MetricCard, TimelineChart, SampleTable)
-│   │   ├── pages/              One component per route (upload, list, detail)
-│   │   ├── services/           HTTP client and formatting helpers
+│   │   ├── components/         Reusable view pieces (MetricCard, DonutChart, TimelineChart,
+│   │   │                       SampleTable, Icon)
+│   │   ├── pages/              One component per route (dashboard, list, upload, detail)
+│   │   ├── services/           HTTP client, formatting helpers, useReports hook
 │   │   ├── uploads/            Upload feature: dropzone, validation rules, useUpload hook
 │   │   ├── App.jsx             Router and layout
 │   │   └── main.jsx            React entry point
@@ -111,18 +112,40 @@ The same 45 MB file uploaded through `POST /api/reports` answers `201` in about 
 
 ## Using the app
 
-1. **Import .jtl** — drag & drop or browse for a `.jtl`/`.csv`/`.xml` file. The format is
-   auto-detected, the file is parsed server-side, then the summary, the timeline and the
-   samples are saved.
-2. **Saved reports** — every imported run with its key figures and how many samples were
-   stored; open one, or delete it (samples and timeline are cascade-deleted).
-3. **Report detail** — full summary, response-time timeline chart, slowest / failed sample
-   tables and a per-sampler breakdown.
+The left icon rail gives access to three pages:
+
+1. **Latest uploads** (home, `#/latest`) — dashboard of the six most recent `.jtl` uploads as
+   pastel cards (format, size, age, samples, error rate, P95), each with a direct link to its
+   report. A side column sums up every stored run (reports, requests analysed, failures,
+   global error rate, imported volume), offers a shortcut to the import page and lists the
+   five latest uploads as a compact history. The header search filters the list by file name.
+2. **Saved reports** (`#/reports`) — the full table of imported runs with their key figures
+   and how many samples were stored; open one, or delete it (samples and timeline are
+   cascade-deleted). The header search applies here too.
+3. **Import .jtl** (`#/upload`) — drag & drop or browse for a `.jtl`/`.csv`/`.xml` file. The
+   format is auto-detected, the file is parsed server-side, then the summary, the timeline and
+   the samples are saved.
+
+**Report detail** (`#/reports/:id`) opens from any of those lists: a success/failure **donut
+chart** with its legend (counts and shares), the summary metric cards, the response-time
+timeline chart, slowest / failed sample tables and a per-sampler breakdown.
+
+### Look and feel
+
+The interface follows a soft pastel dashboard style: a single rounded white shell floating on
+a tinted canvas, a dark icon rail for navigation, generous radii, pastel data cards (mint,
+pink, yellow, lavender) and a monochrome ink palette for typography. No UI framework is
+used — everything is hand-written CSS in `client/src/assets/styles.css`.
 
 ### Responsive layout
 
 The UI is usable from a 320 px phone to a wide desktop, with no horizontal page scrolling:
 
+- **The dashboard** drops from two columns to one below 1100 px, and the upload cards reflow
+  from three columns to one.
+- **The icon rail** becomes a sticky bottom bar below 900 px, and the shell goes full-bleed
+  (no outer margin, no rounded corners) below 520 px.
+- **The donut chart** places its legend beside the ring on tablets and below it on phones.
 - **Metric cards** reflow from 1 column on a phone up to 6 on a large screen.
 - **Short tables** (saved reports, individual samples) turn into stacked cards below 720 px,
   each value keeping its column name as a label.

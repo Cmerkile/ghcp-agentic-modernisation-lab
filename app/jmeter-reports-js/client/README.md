@@ -21,9 +21,9 @@ From the repository root, `npm run dev` starts this client **and** the API toget
 | --- | --- |
 | `public/` | Static files copied as-is (favicon) |
 | `src/assets/` | `styles.css` — design tokens, layout and every responsive breakpoint |
-| `src/components/` | Presentational pieces reused by pages: `MetricCard`, `TimelineChart`, `SampleTable` |
-| `src/pages/` | One component per route: `UploadPage`, `ReportsPage`, `ReportDetailPage` |
-| `src/services/` | `api.js` (fetch wrapper, typed errors) and `format.js` (numbers, durations, bytes, dates) |
+| `src/components/` | Presentational pieces reused by pages: `MetricCard`, `DonutChart` (success vs failure), `TimelineChart`, `SampleTable`, `Icon` (inline SVG set) |
+| `src/pages/` | One component per route: `LatestUploadsPage`, `ReportsPage`, `UploadPage`, `ReportDetailPage` |
+| `src/services/` | `api.js` (fetch wrapper, typed errors), `format.js` (numbers, durations, bytes, dates, relative time) and `useReports.js` (shared list loader) |
 | `src/uploads/` | Upload feature: `Dropzone` (drag & drop + file picker), `validation.js` (client-side extension/size checks), `useUpload` (state machine for the request) |
 | `App.jsx` | Hash router and page shell |
 | `main.jsx` | React entry point |
@@ -32,17 +32,30 @@ From the repository root, `npm run dev` starts this client **and** the API toget
 
 | Route | Page |
 | --- | --- |
-| `#/upload` | Import a `.jtl` file |
+| `#/latest` (default) | Dashboard of the latest uploads, each linking to its report, plus global stats and upload history |
 | `#/reports` | Saved reports, newest first |
-| `#/reports/:id` | Detail: summary metrics, timeline chart, per-sampler breakdown, slowest and failed samples |
+| `#/upload` | Import a `.jtl` file |
+| `#/reports/:id` | Detail: success/failure donut, summary metrics, timeline chart, per-sampler breakdown, slowest and failed samples |
 
 ## Configuration
 
 `VITE_API_URL` overrides the API base URL. When it is not set, the dev server proxies
 `/api` to `http://localhost:3002` (see `vite.config.js`).
 
+## Design
+
+Soft pastel dashboard: a rounded white shell on a tinted canvas, a dark icon rail, pastel
+cards (mint / pink / yellow / lavender) and an ink-on-white type scale. Everything is plain
+CSS in `src/assets/styles.css` — no UI framework, no CSS-in-JS.
+
+The header search box is owned by `App.jsx` and passed to the two list pages, so it filters
+the dashboard and the saved-reports table by file name.
+
 ## Responsive behaviour
 
+- The dashboard collapses to a single column below 1100 px; the icon rail becomes a sticky
+  bottom bar below 900 px and the shell goes full-bleed below 520 px.
+- The donut legend sits beside the ring on tablets and under it on phones.
 - Below 720 px, short tables become stacked cards (`data-label` + CSS `::before`).
 - The 12-column per-sampler table scrolls inside its own box with the label column pinned.
 - `TimelineChart` uses a `ResizeObserver` and draws at the container's real pixel width, so
