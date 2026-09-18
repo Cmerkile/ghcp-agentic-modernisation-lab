@@ -215,7 +215,6 @@ prompt:
 I need some tools to run a workshop. Help me install:
 - JDK 17 or later, Maven 3.6 or later
 - Node and npm
-- Docker and the Azure CLI 
 ```
 
 ## How to run the code?
@@ -538,6 +537,13 @@ reviewing the generated assessment report.
 ![Completed assessment session beside the evidence-based Order Service assessment summary](assets/assessment-sub-agent-session.png)
 
 ![Assessment artifact confirmation showing the path to assessment.md](assets/assessment-report.png)
+
+<div class="info" data-title="note">
+
+> Depending on the assessment workflow, the agent can generate either an
+> `assessment.md` Markdown report or a structured `report.json` artifact.
+
+</div>
 
 </div>
 
