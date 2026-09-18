@@ -12,8 +12,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 const services = [
-  { name: 'api', color: '\u001B[36m', dir: resolve(root, 'backend'), args: ['run', 'dev'] },
-  { name: 'web', color: '\u001B[35m', dir: resolve(root, 'frontend'), args: ['run', 'dev'] },
+  { name: 'api', color: '\u001B[36m', dir: resolve(root, 'server'), args: ['run', 'dev'] },
+  { name: 'web', color: '\u001B[35m', dir: resolve(root, 'client'), args: ['run', 'dev'] },
 ];
 
 for (const service of services) {

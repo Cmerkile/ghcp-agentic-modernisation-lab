@@ -1,0 +1,6 @@
+node_modules/
+
+# Generated SQLite database and its WAL companions.
+src/database.db
+src/database.db-*
+data/

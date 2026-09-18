@@ -8,13 +8,41 @@ Stack: **React (JavaScript) + Express + SQLite**.
 
 ```
 app/jmeter-reports-js
-├── backend/     Express REST API (JavaScript ESM, SQLite)
-├── frontend/    React + JSX UI (Vite)
-├── scripts/     dev.js (runs API + UI together), seed.js (bulk import)
-├── samples/     Example .jtl files (CSV and XML flavours)
-│   └── large/   Drop real, multi-MB runs here (git-ignored)
-└── package.json Root launcher: setup / dev / seed / test
+├── client/                     React (JavaScript) UI, built with Vite
+│   ├── public/                 Static assets served as-is (favicon)
+│   ├── src/
+│   │   ├── assets/             Stylesheet
+│   │   ├── components/         Reusable view pieces (MetricCard, TimelineChart, SampleTable)
+│   │   ├── pages/              One component per route (upload, list, detail)
+│   │   ├── services/           HTTP client and formatting helpers
+│   │   ├── uploads/            Upload feature: dropzone, validation rules, useUpload hook
+│   │   ├── App.jsx             Router and layout
+│   │   └── main.jsx            React entry point
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── README.md
+│   └── vite.config.js
+├── server/                     Express REST API
+│   ├── src/
+│   │   ├── controllers/        Request handlers (validation, HTTP status, payloads)
+│   │   ├── db/                 SQLite connection, schema and row mappers
+│   │   ├── models/             Domain layer: report persistence, .jtl parsing, statistics
+│   │   ├── routes/             Express routers mounted under /api
+│   │   ├── config.js           Environment-driven settings
+│   │   └── database.db         SQLite file, created on first run (git-ignored)
+│   ├── test/                   node:test suites
+│   ├── index.js                createApp() + server entry point
+│   └── package.json
+├── scripts/                    dev.js (runs API + UI together), seed.js (bulk import)
+├── samples/                    Example .jtl files (CSV and XML flavours)
+│   └── large/                  Drop real, multi-MB runs here (git-ignored)
+├── package.json                Root launcher: setup / dev / seed / lint / test / build
+└── README.md
 ```
+
+The server follows a layered flow — `routes` → `controllers` → `models` → `db` — so the HTTP
+contract, the parsing/statistics logic and the SQL all stay independently testable.
 
 > A TypeScript variant of this app lives in `app/jmeter-reports`. It stores only metadata and
 > metrics; this JavaScript version additionally persists the samples themselves, which is what
@@ -23,7 +51,7 @@ app/jmeter-reports-js
 
 ## Requirements
 
-- **Node.js >= 22.6** — the backend uses the built-in `node:sqlite` module, so there is no
+- **Node.js >= 22.6** — the server uses the built-in `node:sqlite` module, so there is no
   native module to compile and no ORM.
 - npm 10+
 
@@ -33,7 +61,7 @@ One command installs everything, another starts both processes:
 
 ```bash
 cd app/jmeter-reports-js
-npm run setup      # installs backend + frontend dependencies
+npm run setup      # installs server + client dependencies
 npm run dev        # starts the API (3002) and the UI (5175) together, Ctrl+C stops both
 ```
 
@@ -42,15 +70,16 @@ Open http://localhost:5175 and import `samples/sample-results.jtl` (CSV) or
 
 | Root command | What it does |
 | --- | --- |
-| `npm run setup` | Installs dependencies in `backend/` and `frontend/` |
+| `npm run setup` | Installs dependencies in `server/` and `client/` |
 | `npm run dev` | Runs API + UI with prefixed `[api]` / `[web]` logs |
 | `npm run seed` | Imports every `.jtl` of `samples/` and `samples/large/` into SQLite |
 | `npm run reset` | Same as `seed`, after deleting all existing reports |
-| `npm test` | Backend test suite (28 cases) |
-| `npm run build` | Production build of the frontend |
+| `npm test` | Server test suite (28 cases) |
+| `npm run lint` | ESLint on the client |
+| `npm run build` | Production build of the client |
 
-Each side can still be driven on its own with `npm --prefix backend start` and
-`npm --prefix frontend run dev`.
+Each side can still be driven on its own with `npm --prefix server start` and
+`npm --prefix client run dev`.
 
 ### Loading real runs without uploading
 
@@ -71,14 +100,14 @@ identical to an uploaded one. Measured on two real runs:
 
 The same 45 MB file uploaded through `POST /api/reports` answers `201` in about 1.4 s.
 
-### Configuration (backend environment variables)
+### Configuration (server environment variables)
 
 | Variable             | Default                   | Description                                    |
 | -------------------- | ------------------------- | ---------------------------------------------- |
 | `PORT`               | `3002`                    | HTTP port of the API                           |
 | `MAX_UPLOAD_MB`      | `64`                      | Maximum accepted upload size                   |
 | `MAX_STORED_SAMPLES` | `200000`                  | Cap on raw samples persisted per report        |
-| `DATABASE_PATH`      | `backend/data/reports.db` | SQLite database file (auto-created)            |
+| `DATABASE_PATH`      | `server/src/database.db`  | SQLite database file (auto-created)            |
 
 ## Using the app
 
@@ -174,8 +203,9 @@ rows remain browsable, which keeps the database bounded for very large `.jtl` fi
 
 ```bash
 cd app/jmeter-reports-js
-npm test           # 28 node:test cases
-npm run build      # frontend production build
+npm test           # 28 node:test cases (server)
+npm run lint       # ESLint on the client
+npm run build      # client production build
 ```
 
 Test coverage focuses on the risky logic: CSV/XML detection and parsing (headers, delimiters,

@@ -13,10 +13,10 @@ import { basename, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const { config } = await import(resolve(root, 'backend/src/config.js'));
-const { parseJtl, JtlParseError } = await import(resolve(root, 'backend/src/parsing/index.js'));
-const { computeStatistics, computeTimeline } = await import(resolve(root, 'backend/src/stats.js'));
-const { ReportStore } = await import(resolve(root, 'backend/src/store.js'));
+const { config } = await import(resolve(root, 'server/src/config.js'));
+const { parseJtl, JtlParseError } = await import(resolve(root, 'server/src/models/parsing/index.js'));
+const { computeStatistics, computeTimeline } = await import(resolve(root, 'server/src/models/statistics.js'));
+const { ReportModel } = await import(resolve(root, 'server/src/models/report.model.js'));
 
 const args = process.argv.slice(2);
 const reset = args.includes('--reset');
@@ -48,7 +48,7 @@ if (files.length === 0) {
   process.exit(1);
 }
 
-const store = new ReportStore(config.databasePath, { maxStoredSamples: config.maxStoredSamples });
+const store = new ReportModel(config.databasePath, { maxStoredSamples: config.maxStoredSamples });
 
 if (reset) {
   const existing = store.list();
