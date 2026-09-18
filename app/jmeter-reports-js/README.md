@@ -90,6 +90,20 @@ The same 45 MB file uploaded through `POST /api/reports` answers `201` in about 
 3. **Report detail** — full summary, response-time timeline chart, slowest / failed sample
    tables and a per-sampler breakdown.
 
+### Responsive layout
+
+The UI is usable from a 320 px phone to a wide desktop, with no horizontal page scrolling:
+
+- **Metric cards** reflow from 1 column on a phone up to 6 on a large screen.
+- **Short tables** (saved reports, individual samples) turn into stacked cards below 720 px,
+  each value keeping its column name as a label.
+- **The per-sampler table** (12 columns) scrolls horizontally inside its own box, with the
+  label column pinned so a row stays identifiable while scrolling.
+- **The timeline chart** is drawn at the container's real pixel width instead of being
+  squeezed by a fixed `viewBox`, so axis labels stay legible; below 520 px it switches to a
+  compact layout and only keeps the error points when they would otherwise overlap.
+- Header, toolbars and buttons wrap, and tap targets are at least 44 px high.
+
 ### Computed metrics
 
 Total requests, successes, failures, error rate (%), min / average / median / max response

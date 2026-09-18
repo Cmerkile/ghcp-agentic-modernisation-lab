@@ -144,44 +144,47 @@ export default function ReportDetailPage({ id }) {
       />
 
       <h3>Per sampler</h3>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Label</th>
-            <th className="numeric">Samples</th>
-            <th className="numeric">Errors</th>
-            <th className="numeric">Error rate</th>
-            <th className="numeric">Min</th>
-            <th className="numeric">Avg</th>
-            <th className="numeric">Median</th>
-            <th className="numeric">P90</th>
-            <th className="numeric">P95</th>
-            <th className="numeric">P99</th>
-            <th className="numeric">Max</th>
-            <th className="numeric">Throughput</th>
-          </tr>
-        </thead>
-        <tbody>
-          {report.labels.map((entry) => (
-            <tr key={entry.label}>
-              <td>{entry.label}</td>
-              <td className="numeric">{entry.totalRequests.toLocaleString()}</td>
-              <td className="numeric">{entry.errorCount.toLocaleString()}</td>
-              <td className={`numeric ${entry.errorRate > 0 ? 'bad' : 'good'}`}>
-                {entry.errorRate}%
-              </td>
-              <td className="numeric">{formatMs(entry.minMs)}</td>
-              <td className="numeric">{formatMs(entry.avgMs)}</td>
-              <td className="numeric">{formatMs(entry.medianMs)}</td>
-              <td className="numeric">{formatMs(entry.p90Ms)}</td>
-              <td className="numeric">{formatMs(entry.p95Ms)}</td>
-              <td className="numeric">{formatMs(entry.p99Ms)}</td>
-              <td className="numeric">{formatMs(entry.maxMs)}</td>
-              <td className="numeric">{entry.throughputPerSec}/s</td>
+      <p className="table-hint">Scroll horizontally to see every percentile.</p>
+      <div className="table-scroll">
+        <table className="data-table sticky-first">
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th className="numeric">Samples</th>
+              <th className="numeric">Errors</th>
+              <th className="numeric">Error rate</th>
+              <th className="numeric">Min</th>
+              <th className="numeric">Avg</th>
+              <th className="numeric">Median</th>
+              <th className="numeric">P90</th>
+              <th className="numeric">P95</th>
+              <th className="numeric">P99</th>
+              <th className="numeric">Max</th>
+              <th className="numeric">Throughput</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {report.labels.map((entry) => (
+              <tr key={entry.label}>
+                <td className="cell-title">{entry.label}</td>
+                <td className="numeric">{entry.totalRequests.toLocaleString()}</td>
+                <td className="numeric">{entry.errorCount.toLocaleString()}</td>
+                <td className={`numeric ${entry.errorRate > 0 ? 'bad' : 'good'}`}>
+                  {entry.errorRate}%
+                </td>
+                <td className="numeric">{formatMs(entry.minMs)}</td>
+                <td className="numeric">{formatMs(entry.avgMs)}</td>
+                <td className="numeric">{formatMs(entry.medianMs)}</td>
+                <td className="numeric">{formatMs(entry.p90Ms)}</td>
+                <td className="numeric">{formatMs(entry.p95Ms)}</td>
+                <td className="numeric">{formatMs(entry.p99Ms)}</td>
+                <td className="numeric">{formatMs(entry.maxMs)}</td>
+                <td className="numeric">{entry.throughputPerSec}/s</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   )
 }

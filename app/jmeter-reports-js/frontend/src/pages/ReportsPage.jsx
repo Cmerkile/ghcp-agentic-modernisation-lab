@@ -58,47 +58,66 @@ export default function ReportsPage() {
       )}
 
       {reports.length > 0 && (
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>File</th>
-              <th>Imported</th>
-              <th className="numeric">Samples</th>
-              <th className="numeric">Stored</th>
-              <th className="numeric">Error rate</th>
-              <th className="numeric">Avg</th>
-              <th className="numeric">P95</th>
-              <th className="numeric">Throughput</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {reports.map((report) => (
-              <tr key={report.id}>
-                <td>
-                  <a href={`#/reports/${report.id}`}>{report.fileName}</a>
-                  <span className="cell-sub">
-                    {report.format.toUpperCase()} · {formatBytes(report.fileSize)}
-                  </span>
-                </td>
-                <td>{formatDateTime(report.createdAt)}</td>
-                <td className="numeric">{report.metrics.totalRequests.toLocaleString()}</td>
-                <td className="numeric">{report.storedSamples.toLocaleString()}</td>
-                <td className={`numeric ${report.metrics.errorRate > 0 ? 'bad' : 'good'}`}>
-                  {report.metrics.errorRate}%
-                </td>
-                <td className="numeric">{formatMs(report.metrics.avgMs)}</td>
-                <td className="numeric">{formatMs(report.metrics.p95Ms)}</td>
-                <td className="numeric">{report.metrics.throughputPerSec}/s</td>
-                <td>
-                  <button type="button" className="link-button" onClick={() => onDelete(report.id)}>
-                    Delete
-                  </button>
-                </td>
+        <div className="table-scroll stackable">
+          <table className="data-table stacking">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Imported</th>
+                <th className="numeric">Samples</th>
+                <th className="numeric">Stored</th>
+                <th className="numeric">Error rate</th>
+                <th className="numeric">Avg</th>
+                <th className="numeric">P95</th>
+                <th className="numeric">Throughput</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {reports.map((report) => (
+                <tr key={report.id}>
+                  <td className="cell-title" data-label="File">
+                    <a href={`#/reports/${report.id}`}>{report.fileName}</a>
+                    <span className="cell-sub">
+                      {report.format.toUpperCase()} · {formatBytes(report.fileSize)}
+                    </span>
+                  </td>
+                  <td data-label="Imported">{formatDateTime(report.createdAt)}</td>
+                  <td className="numeric" data-label="Samples">
+                    {report.metrics.totalRequests.toLocaleString()}
+                  </td>
+                  <td className="numeric" data-label="Stored">
+                    {report.storedSamples.toLocaleString()}
+                  </td>
+                  <td
+                    className={`numeric ${report.metrics.errorRate > 0 ? 'bad' : 'good'}`}
+                    data-label="Error rate"
+                  >
+                    {report.metrics.errorRate}%
+                  </td>
+                  <td className="numeric" data-label="Avg">
+                    {formatMs(report.metrics.avgMs)}
+                  </td>
+                  <td className="numeric" data-label="P95">
+                    {formatMs(report.metrics.p95Ms)}
+                  </td>
+                  <td className="numeric" data-label="Throughput">
+                    {report.metrics.throughputPerSec}/s
+                  </td>
+                  <td className="cell-actions">
+                    <button
+                      type="button"
+                      className="link-button"
+                      onClick={() => onDelete(report.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   )
