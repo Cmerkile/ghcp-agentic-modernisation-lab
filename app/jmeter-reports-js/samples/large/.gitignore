@@ -1,0 +1,6 @@
+# Real JMeter runs are large binary-ish artefacts: keep them local, out of git.
+*.jtl
+*.csv
+*.xml
+!.gitignore
+!README.md

@@ -105,8 +105,16 @@ export function computeTimeline(samples, maxBuckets = 60) {
     return [];
   }
 
-  const start = Math.min(...samples.map((sample) => sample.timestamp));
-  const end = Math.max(...samples.map((sample) => sample.timestamp));
+  let start = samples[0].timestamp;
+  let end = samples[0].timestamp;
+  for (const sample of samples) {
+    if (sample.timestamp < start) {
+      start = sample.timestamp;
+    }
+    if (sample.timestamp > end) {
+      end = sample.timestamp;
+    }
+  }
   const span = Math.max(1, end - start + 1);
   const bucketMs = Math.max(1000, Math.ceil(span / maxBuckets));
 

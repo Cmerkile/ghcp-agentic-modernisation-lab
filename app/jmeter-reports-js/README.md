@@ -10,7 +10,10 @@ Stack: **React (JavaScript) + Express + SQLite**.
 app/jmeter-reports-js
 ├── backend/     Express REST API (JavaScript ESM, SQLite)
 ├── frontend/    React + JSX UI (Vite)
-└── samples/     Example .jtl files (CSV and XML flavours)
+├── scripts/     dev.js (runs API + UI together), seed.js (bulk import)
+├── samples/     Example .jtl files (CSV and XML flavours)
+│   └── large/   Drop real, multi-MB runs here (git-ignored)
+└── package.json Root launcher: setup / dev / seed / test
 ```
 
 > A TypeScript variant of this app lives in `app/jmeter-reports`. It stores only metadata and
@@ -26,20 +29,47 @@ app/jmeter-reports-js
 
 ## Getting started
 
-```bash
-# 1. Backend (http://localhost:3002)
-cd app/jmeter-reports-js/backend
-npm install
-npm start          # npm run dev for watch mode
+One command installs everything, another starts both processes:
 
-# 2. Frontend (http://localhost:5175, proxies /api to the backend)
-cd app/jmeter-reports-js/frontend
-npm install
-npm run dev
+```bash
+cd app/jmeter-reports-js
+npm run setup      # installs backend + frontend dependencies
+npm run dev        # starts the API (3002) and the UI (5175) together, Ctrl+C stops both
 ```
 
 Open http://localhost:5175 and import `samples/sample-results.jtl` (CSV) or
 `samples/sample-results-xml.jtl` (XML).
+
+| Root command | What it does |
+| --- | --- |
+| `npm run setup` | Installs dependencies in `backend/` and `frontend/` |
+| `npm run dev` | Runs API + UI with prefixed `[api]` / `[web]` logs |
+| `npm run seed` | Imports every `.jtl` of `samples/` and `samples/large/` into SQLite |
+| `npm run reset` | Same as `seed`, after deleting all existing reports |
+| `npm test` | Backend test suite (28 cases) |
+| `npm run build` | Production build of the frontend |
+
+Each side can still be driven on its own with `npm --prefix backend start` and
+`npm --prefix frontend run dev`.
+
+### Loading real runs without uploading
+
+Put your production `.jtl` exports in `samples/large/` (git-ignored) and run:
+
+```bash
+npm run seed              # or: npm run seed -- /path/to/run.jtl
+npm run seed -- --reset   # wipe the database first
+```
+
+The seed script reuses the API's parser, statistics and store, so a seeded report is
+identical to an uploaded one. Measured on two real runs:
+
+| File | Size | Samples | Import |
+| --- | --- | --- | --- |
+| `…itg.tbd…_ELASTIC_LARGE_NORMAL.jtl` | 37 MB | 109 944 | ~1.1 s |
+| `…itg3.tbd…_ELASTIC_LARGE_NORMAL.jtl` | 45 MB | 136 642 | ~1.4 s |
+
+The same 45 MB file uploaded through `POST /api/reports` answers `201` in about 1.4 s.
 
 ### Configuration (backend environment variables)
 
@@ -129,15 +159,13 @@ rows remain browsable, which keeps the database bounded for very large `.jtl` fi
 ## Tests
 
 ```bash
-cd app/jmeter-reports-js/backend
-npm test        # 27 node:test cases
-
-cd ../frontend
-npm run build
+cd app/jmeter-reports-js
+npm test           # 28 node:test cases
+npm run build      # frontend production build
 ```
 
 Test coverage focuses on the risky logic: CSV/XML detection and parsing (headers, delimiters,
 quoting, nested samples, malformed rows), statistics (percentiles, median, error rate,
-throughput, single-sample edge case), timeline bucketing (bucket widening, no lost sample) and
+throughput, single-sample edge case), timeline bucketing (bucket widening, no lost sample, 150k-sample volume) and
 the API contract (upload, persistence, sample storage and its cap, slowest/failed views,
 validation errors, 404, cascade delete).

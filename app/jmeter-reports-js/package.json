@@ -1,0 +1,21 @@
+{
+  "name": "jmeter-reports-js",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Single-user JMeter .jtl report application: Express + SQLite API and React (JavaScript) UI.",
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "scripts": {
+    "setup": "npm --prefix backend install && npm --prefix frontend install",
+    "dev": "node scripts/dev.js",
+    "start": "node scripts/dev.js",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test",
+    "seed": "node scripts/seed.js",
+    "reset": "node scripts/seed.js --reset"
+  }
+}

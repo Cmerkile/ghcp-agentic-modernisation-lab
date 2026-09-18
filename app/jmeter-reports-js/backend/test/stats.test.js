@@ -121,3 +121,17 @@ test('computeTimeline widens buckets so a long run stays under the point budget'
 test('computeTimeline returns nothing for an empty sample set', () => {
   assert.deepEqual(computeTimeline([]), []);
 });
+
+test('computeTimeline handles the sample volume of a real multi-hour run', () => {
+  // Regression: spreading 100k+ values into Math.min/Math.max blew the stack.
+  const samples = Array.from({ length: 150_000 }, (_, index) =>
+    sample({ timestamp: 1_700_000_000_000 + index * 100 }),
+  );
+  const timeline = computeTimeline(samples, 60);
+
+  assert.ok(timeline.length <= 60);
+  assert.equal(
+    timeline.reduce((total, bucket) => total + bucket.count, 0),
+    150_000,
+  );
+});
