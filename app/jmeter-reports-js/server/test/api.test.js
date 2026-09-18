@@ -23,14 +23,15 @@ async function withServer(run, storeOptions = {}) {
   }
 }
 
-function formData(content, fileName) {
+function formData(content, fileName, name = 'Sample run') {
   const form = new FormData();
   form.append('file', new Blob([content], { type: 'text/csv' }), fileName);
+  form.append('name', name);
   return form;
 }
 
-function upload(baseUrl, content = CSV, fileName = 'run.jtl') {
-  return fetch(`${baseUrl}/api/reports`, { method: 'POST', body: formData(content, fileName) });
+function upload(baseUrl, content = CSV, fileName = 'run.jtl', name = 'Sample run') {
+  return fetch(`${baseUrl}/api/reports`, { method: 'POST', body: formData(content, fileName, name) });
 }
 
 test('uploading a CSV jtl creates a persisted report that can be read back', async () => {
@@ -40,6 +41,7 @@ test('uploading a CSV jtl creates a persisted report that can be read back', asy
     const created = await response.json();
 
     assert.equal(created.fileName, 'run.jtl');
+    assert.equal(created.name, 'Sample run');
     assert.equal(created.format, 'csv');
     assert.equal(created.metrics.totalRequests, 3);
     assert.equal(created.metrics.errorRate, 33.33);
@@ -116,6 +118,34 @@ test('rejects a request without a file', async () => {
     const response = await fetch(`${baseUrl}/api/reports`, { method: 'POST', body: new FormData() });
     assert.equal(response.status, 400);
     assert.equal((await response.json()).error.code, 'NO_FILE');
+  });
+});
+
+test('rejects an upload without a name', async () => {
+  await withServer(async (baseUrl) => {
+    const response = await upload(baseUrl, CSV, 'run.jtl', '');
+    assert.equal(response.status, 400);
+    assert.equal((await response.json()).error.code, 'NAME_REQUIRED');
+  });
+});
+
+test('rejects a name that is only whitespace', async () => {
+  await withServer(async (baseUrl) => {
+    const response = await upload(baseUrl, CSV, 'run.jtl', '   ');
+    assert.equal(response.status, 400);
+    assert.equal((await response.json()).error.code, 'NAME_REQUIRED');
+  });
+});
+
+test('rejects a name that is too short or too long', async () => {
+  await withServer(async (baseUrl) => {
+    const tooShort = await upload(baseUrl, CSV, 'run.jtl', 'A');
+    assert.equal(tooShort.status, 400);
+    assert.equal((await tooShort.json()).error.code, 'NAME_TOO_SHORT');
+
+    const tooLong = await upload(baseUrl, CSV, 'run.jtl', 'x'.repeat(81));
+    assert.equal(tooLong.status, 400);
+    assert.equal((await tooLong.json()).error.code, 'NAME_TOO_LONG');
   });
 });
 

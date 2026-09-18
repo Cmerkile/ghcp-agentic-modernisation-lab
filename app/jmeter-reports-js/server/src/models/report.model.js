@@ -18,14 +18,14 @@ export class ReportModel {
     this.#maxStoredSamples = maxStoredSamples;
   }
 
-  create({ fileName, fileSize, format, skippedRows, statistics, timeline, samples }) {
+  create({ name, fileName, fileSize, format, skippedRows, statistics, timeline, samples }) {
     const id = randomUUID();
     const createdAt = new Date().toISOString();
     const stored = samples.slice(0, this.#maxStoredSamples);
 
     const insertReport = this.#db.prepare(`
-      INSERT INTO reports (id, file_name, file_size, format, skipped_rows, stored_samples, created_at, ${METRIC_COLUMNS.join(', ')})
-      VALUES (${new Array(7 + METRIC_COLUMNS.length).fill('?').join(', ')})
+      INSERT INTO reports (id, name, file_name, file_size, format, skipped_rows, stored_samples, created_at, ${METRIC_COLUMNS.join(', ')})
+      VALUES (${new Array(8 + METRIC_COLUMNS.length).fill('?').join(', ')})
     `);
     const insertLabel = this.#db.prepare(`
       INSERT INTO report_labels (report_id, label, ${METRIC_COLUMNS.join(', ')})
@@ -44,6 +44,7 @@ export class ReportModel {
     try {
       insertReport.run(
         id,
+        name,
         fileName,
         fileSize,
         format,

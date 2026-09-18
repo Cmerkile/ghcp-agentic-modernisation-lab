@@ -8,7 +8,11 @@ export default function ReportsPage({ search = '' }) {
 
   const filtered = useMemo(() => {
     const needle = search.trim().toLowerCase()
-    return needle ? reports.filter((r) => r.fileName.toLowerCase().includes(needle)) : reports
+    return needle
+      ? reports.filter(
+          (r) => r.name.toLowerCase().includes(needle) || r.fileName.toLowerCase().includes(needle),
+        )
+      : reports
   }, [reports, search])
 
   const onDelete = async (id) => {
@@ -46,7 +50,7 @@ export default function ReportsPage({ search = '' }) {
           <table className="data-table stacking">
             <thead>
               <tr>
-                <th>File</th>
+                <th>Report</th>
                 <th>Imported</th>
                 <th className="numeric">Samples</th>
                 <th className="numeric">Stored</th>
@@ -60,10 +64,11 @@ export default function ReportsPage({ search = '' }) {
             <tbody>
               {filtered.map((report) => (
                 <tr key={report.id}>
-                  <td className="cell-title" data-label="File">
-                    <a href={`#/reports/${report.id}`}>{report.fileName}</a>
+                  <td className="cell-title" data-label="Report">
+                    <a href={`#/reports/${report.id}`}>{report.name}</a>
                     <span className="cell-sub">
-                      {report.format.toUpperCase()} · {formatBytes(report.fileSize)}
+                      {report.fileName} · {report.format.toUpperCase()} ·{' '}
+                      {formatBytes(report.fileSize)}
                     </span>
                   </td>
                   <td data-label="Imported">{formatDateTime(report.createdAt)}</td>

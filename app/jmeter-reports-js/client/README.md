@@ -24,7 +24,7 @@ From the repository root, `npm run dev` starts this client **and** the API toget
 | `src/components/` | Presentational pieces reused by pages: `MetricCard`, `DonutChart` (success vs failure), `TimelineChart`, `SampleTable`, `Icon` (inline SVG set) |
 | `src/pages/` | One component per route: `LatestUploadsPage`, `ReportsPage`, `UploadPage`, `ReportDetailPage` |
 | `src/services/` | `api.js` (fetch wrapper, typed errors), `format.js` (numbers, durations, bytes, dates, relative time) and `useReports.js` (shared list loader) |
-| `src/uploads/` | Upload feature: `Dropzone` (drag & drop + file picker), `validation.js` (client-side extension/size checks), `useUpload` (state machine for the request) |
+| `src/uploads/` | Upload feature: `Dropzone` (drag & drop + file picker), `validation.js` (client-side extension/size/name checks, mirrors the server), `useUpload` (state machine for the request, including the mandatory short name) |
 | `App.jsx` | Hash router and page shell |
 | `main.jsx` | React entry point |
 
@@ -34,7 +34,7 @@ From the repository root, `npm run dev` starts this client **and** the API toget
 | --- | --- |
 | `#/latest` (default) | Dashboard of the latest uploads, each linking to its report, plus global stats and upload history |
 | `#/reports` | Saved reports, newest first |
-| `#/upload` | Import a `.jtl` file |
+| `#/upload` | Import a `.jtl` file — requires a short report name (2-80 characters) |
 | `#/reports/:id` | Detail: success/failure donut, summary metrics, timeline chart, per-sampler breakdown, slowest and failed samples |
 
 ## Configuration

@@ -32,6 +32,27 @@ export function createReportsController(reports) {
         return fail(res, 400, 'NO_FILE', 'No file was uploaded. Use the "file" form field.');
       }
 
+      const name = typeof req.body.name === 'string' ? req.body.name.trim() : '';
+      if (!name) {
+        return fail(res, 400, 'NAME_REQUIRED', 'A short name is required for this report.');
+      }
+      if (name.length < config.minNameLength) {
+        return fail(
+          res,
+          400,
+          'NAME_TOO_SHORT',
+          `The name must be at least ${config.minNameLength} characters long.`,
+        );
+      }
+      if (name.length > config.maxNameLength) {
+        return fail(
+          res,
+          400,
+          'NAME_TOO_LONG',
+          `The name must be at most ${config.maxNameLength} characters long.`,
+        );
+      }
+
       const extension = extname(file.originalname).toLowerCase();
       if (!config.allowedExtensions.includes(extension)) {
         return fail(
@@ -49,6 +70,7 @@ export function createReportsController(reports) {
       try {
         const parsed = parseJtl(file.buffer.toString('utf8'));
         const report = reports.create({
+          name,
           fileName: file.originalname,
           fileSize: file.size,
           format: parsed.format,

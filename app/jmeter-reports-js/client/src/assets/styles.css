@@ -465,6 +465,17 @@ button:disabled {
   overflow: hidden;
 }
 
+.upload-card-file {
+  display: block;
+  margin-top: -0.35rem;
+  font-size: 0.74rem;
+  color: rgba(22, 24, 29, 0.6);
+  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .upload-card-stats {
   display: flex;
   flex-wrap: wrap;
@@ -609,6 +620,37 @@ button:disabled {
   gap: 1rem;
   align-items: flex-start;
   max-width: 720px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.field-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.required {
+  color: var(--bad);
+}
+
+.field input[type='text'] {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font: inherit;
+  background: var(--surface);
+  color: var(--ink);
+  min-height: 44px;
+}
+
+.field input[type='text']:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
 }
 
 .dropzone {

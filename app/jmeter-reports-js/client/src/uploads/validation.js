@@ -19,3 +19,21 @@ export function validateFile(file) {
   }
   return null
 }
+
+export const MIN_NAME_LENGTH = 2
+export const MAX_NAME_LENGTH = 80
+
+/** Returns an error message, or null when the short name can be submitted. */
+export function validateName(name) {
+  const trimmed = (name ?? '').trim()
+  if (!trimmed) {
+    return 'Give this report a short name.'
+  }
+  if (trimmed.length < MIN_NAME_LENGTH) {
+    return `The name must be at least ${MIN_NAME_LENGTH} characters long.`
+  }
+  if (trimmed.length > MAX_NAME_LENGTH) {
+    return `The name must be at most ${MAX_NAME_LENGTH} characters long.`
+  }
+  return null
+}

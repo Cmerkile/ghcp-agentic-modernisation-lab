@@ -66,6 +66,7 @@ export function rowToMetrics(row) {
 export function rowToSummary(row) {
   return {
     id: String(row.id),
+    name: String(row.name),
     fileName: String(row.file_name),
     fileSize: Number(row.file_size),
     format: String(row.format),

@@ -23,7 +23,11 @@ export default function LatestUploadsPage({ search = '' }) {
 
   const filtered = useMemo(() => {
     const needle = search.trim().toLowerCase()
-    return needle ? reports.filter((r) => r.fileName.toLowerCase().includes(needle)) : reports
+    return needle
+      ? reports.filter(
+          (r) => r.name.toLowerCase().includes(needle) || r.fileName.toLowerCase().includes(needle),
+        )
+      : reports
   }, [reports, search])
 
   const latest = filtered.slice(0, 6)
@@ -80,9 +84,12 @@ export default function LatestUploadsPage({ search = '' }) {
                   </span>
                 </div>
 
-                <h3 className="upload-card-title" title={report.fileName}>
-                  {report.fileName}
+                <h3 className="upload-card-title" title={report.name}>
+                  {report.name}
                 </h3>
+                <span className="upload-card-file" title={report.fileName}>
+                  {report.fileName}
+                </span>
 
                 <dl className="upload-card-stats">
                   <div>
@@ -104,7 +111,7 @@ export default function LatestUploadsPage({ search = '' }) {
                 <a
                   className="round-action"
                   href={`#/reports/${report.id}`}
-                  aria-label={`Open the report for ${report.fileName}`}
+                  aria-label={`Open the report for ${report.name}`}
                 >
                   <Icon name="arrow" size={18} />
                 </a>
@@ -161,7 +168,7 @@ export default function LatestUploadsPage({ search = '' }) {
               <a href={`#/reports/${report.id}`}>
                 <span className="timeline-dot" />
                 <span className="timeline-body">
-                  <strong>{report.fileName}</strong>
+                  <strong>{report.name}</strong>
                   <span className="timeline-meta">
                     {formatRelative(report.createdAt)} ·{' '}
                     {report.metrics.totalRequests.toLocaleString()} samples

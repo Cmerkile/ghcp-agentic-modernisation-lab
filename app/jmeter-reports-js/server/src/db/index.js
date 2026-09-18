@@ -8,6 +8,7 @@ const METRIC_DDL = METRIC_COLUMNS.map((column) => `${column} REAL NOT NULL`).joi
 const SCHEMA = `
   CREATE TABLE IF NOT EXISTS reports (
     id TEXT PRIMARY KEY,
+    name TEXT NOT NULL DEFAULT '',
     file_name TEXT NOT NULL,
     file_size INTEGER NOT NULL,
     format TEXT NOT NULL,
@@ -65,5 +66,18 @@ export function connect(filePath) {
   db.exec('PRAGMA journal_mode = WAL');
   db.exec('PRAGMA foreign_keys = ON');
   db.exec(SCHEMA);
+  migrate(db);
   return db;
+}
+
+/**
+ * Applies schema changes that `CREATE TABLE IF NOT EXISTS` cannot express,
+ * so a database created before the `name` column existed keeps working.
+ */
+function migrate(db) {
+  const columns = db.prepare("PRAGMA table_info(reports)").all().map((column) => column.name);
+  if (!columns.includes('name')) {
+    db.exec("ALTER TABLE reports ADD COLUMN name TEXT NOT NULL DEFAULT ''");
+    db.exec("UPDATE reports SET name = file_name WHERE name = ''");
+  }
 }

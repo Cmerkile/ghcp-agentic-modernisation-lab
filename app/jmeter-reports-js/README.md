@@ -92,7 +92,8 @@ npm run seed -- --reset   # wipe the database first
 ```
 
 The seed script reuses the API's parser, statistics and store, so a seeded report is
-identical to an uploaded one. Measured on two real runs:
+identical to an uploaded one (its `name` defaults to the file name without extension).
+Measured on two real runs:
 
 | File | Size | Samples | Import |
 | --- | --- | --- | --- |
@@ -122,9 +123,10 @@ The left icon rail gives access to three pages:
 2. **Saved reports** (`#/reports`) — the full table of imported runs with their key figures
    and how many samples were stored; open one, or delete it (samples and timeline are
    cascade-deleted). The header search applies here too.
-3. **Import .jtl** (`#/upload`) — drag & drop or browse for a `.jtl`/`.csv`/`.xml` file. The
-   format is auto-detected, the file is parsed server-side, then the summary, the timeline and
-   the samples are saved.
+3. **Import .jtl** (`#/upload`) — give the report a **mandatory short name** (2-80 characters),
+   then drag & drop or browse for a `.jtl`/`.csv`/`.xml` file. The format is auto-detected, the
+   file is parsed server-side, then the summary, the timeline and the samples are saved. The
+   name — not the raw file name — is what identifies the report everywhere afterwards.
 
 **Report detail** (`#/reports/:id`) opens from any of those lists: a success/failure **donut
 chart** with its legend (counts and shares), the summary metric cards, the response-time
@@ -179,11 +181,22 @@ duration and received bytes — overall and per sampler label.
 Unreadable rows are skipped and reported as `skippedRows`; a file with no usable sample is
 rejected.
 
+### Report naming
+
+Every import requires a short, human-readable **name** (2 to 80 characters, trimmed) given at
+upload time. It is stored alongside the file metadata and used everywhere in the UI — cards,
+tables, page titles — instead of the original file name, which is still kept (and shown as a
+secondary detail) for traceability. Reports imported before this field existed keep their raw
+file name as their name (a one-time migration backfills it).
+
 ### Validation and errors
 
 | HTTP | Code                    | Cause                                       |
 | ---- | ----------------------- | ------------------------------------------- |
 | 400  | `NO_FILE`               | No `file` field in the multipart request    |
+| 400  | `NAME_REQUIRED`         | Missing or blank `name` field               |
+| 400  | `NAME_TOO_SHORT`        | Name shorter than 2 characters              |
+| 400  | `NAME_TOO_LONG`         | Name longer than 80 characters              |
 | 400  | `UNSUPPORTED_EXTENSION` | Extension other than `.jtl`, `.csv`, `.xml` |
 | 400  | `EMPTY_FILE`            | Empty file                                  |
 | 400  | `MISSING_COLUMNS`       | CSV header without `timeStamp` / `elapsed`  |
@@ -197,14 +210,14 @@ rejected.
 | Method | Path                       | Description                                             |
 | ------ | -------------------------- | ------------------------------------------------------- |
 | GET    | `/api/health`              | Liveness probe, upload limit and sample cap             |
-| POST   | `/api/reports`             | Multipart upload (`file`), returns the saved report     |
+| POST   | `/api/reports`             | Multipart upload (`file` + required `name`), returns the saved report |
 | GET    | `/api/reports`             | List of saved reports (newest first)                    |
 | GET    | `/api/reports/:id`         | Report detail: metrics, per-label breakdown, timeline   |
 | GET    | `/api/reports/:id/samples` | Stored samples — `?kind=slowest\|failed&limit=1..200`   |
 | DELETE | `/api/reports/:id`         | Deletes a report and all its stored data                |
 
 ```bash
-curl -F "file=@samples/sample-results.jtl" http://localhost:3002/api/reports
+curl -F "file=@samples/sample-results.jtl" -F "name=Smoke test" http://localhost:3002/api/reports
 curl "http://localhost:3002/api/reports/<id>/samples?kind=failed&limit=5"
 ```
 

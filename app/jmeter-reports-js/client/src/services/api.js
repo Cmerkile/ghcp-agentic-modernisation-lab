@@ -34,9 +34,10 @@ export async function getSamples(id, { kind = 'slowest', limit = 10 } = {}) {
   return handle(await fetch(`/api/reports/${id}/samples?kind=${kind}&limit=${limit}`))
 }
 
-export async function uploadReport(file) {
+export async function uploadReport(file, name) {
   const form = new FormData()
   form.append('file', file)
+  form.append('name', name)
   return handle(await fetch('/api/reports', { method: 'POST', body: form }))
 }
 

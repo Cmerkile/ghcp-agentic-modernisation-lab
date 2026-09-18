@@ -13,10 +13,13 @@ function intFromEnv(name, fallback) {
 }
 
 export const config = {
-  port: intFromEnv('PORT', 3002),
+  port: intFromEnv('PORT', 3000),
   maxUploadBytes: intFromEnv('MAX_UPLOAD_MB', 64) * 1024 * 1024,
   /** Upper bound on the raw samples kept in SQLite, to cap database growth. */
   maxStoredSamples: intFromEnv('MAX_STORED_SAMPLES', 200000),
   databasePath: process.env.DATABASE_PATH ?? resolve(here, 'database.db'),
   allowedExtensions: ['.jtl', '.csv', '.xml'],
+  /** Bounds for the mandatory short name given to each import. */
+  minNameLength: 2,
+  maxNameLength: 80,
 };

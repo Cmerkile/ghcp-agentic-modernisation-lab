@@ -75,10 +75,11 @@ export default function ReportDetailPage({ id }) {
         <Icon name="back" size={16} />
         Back to reports
       </a>
-      <h2>{report.fileName}</h2>
+      <h2>{report.name}</h2>
       <p className="page-intro">
-        {report.format.toUpperCase()} · {formatBytes(report.fileSize)} · imported{' '}
-        {formatDateTime(report.createdAt)} · {report.storedSamples.toLocaleString()} samples stored
+        {report.fileName} · {report.format.toUpperCase()} · {formatBytes(report.fileSize)} ·
+        imported {formatDateTime(report.createdAt)} ·{' '}
+        {report.storedSamples.toLocaleString()} samples stored
         {report.skippedRows > 0 && ` · ${report.skippedRows} unreadable rows skipped`}
       </p>
 

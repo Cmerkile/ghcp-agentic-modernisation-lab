@@ -71,6 +71,7 @@ for (const file of files) {
     }
     const parsed = parseJtl(readFileSync(file, 'utf8'));
     const report = store.create({
+      name: basename(file, extname(file)),
       fileName: basename(file),
       fileSize,
       format: parsed.format,
@@ -81,7 +82,7 @@ for (const file of files) {
     });
     imported += 1;
     console.log(
-      `✓ ${report.fileName} — ${parsed.format.toUpperCase()}, ${parsed.samples.length} samples, ` +
+      `✓ ${report.name} — ${parsed.format.toUpperCase()}, ${parsed.samples.length} samples, ` +
         `${report.storedSamples} stored, ${report.metrics.errorRate}% errors (${Date.now() - started} ms)`,
     );
   } catch (error) {
