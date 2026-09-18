@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testResults version="1.2">
+<httpSample t="120" it="0" lt="95" ct="12" ts="1700000000000" s="true" lb="Home" rc="200" rm="OK" tn="Load Test 1-1" dt="text" by="1024" sby="210" ne="0">
+  <assertionResult>
+    <name>Response code check</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="240" it="0" lt="200" ct="10" ts="1700000000200" s="true" lb="Search &amp; filter" rc="200" rm="OK" tn="Load Test 1-2" dt="text" by="2048" sby="240" ne="0"/>
+<httpSample t="890" it="0" lt="850" ct="9" ts="1700000000400" s="false" lb="Checkout" rc="500" rm="Internal Server Error" tn="Load Test 1-3" dt="text" by="512" sby="180" ne="0">
+  <httpSample t="40" ts="1700000000410" s="true" lb="Checkout redirect" rc="302" by="64"/>
+</httpSample>
+<httpSample t="150" it="0" lt="120" ct="8" ts="1700000000600" s="true" lb="Home" rc="200" rm="OK" tn="Load Test 1-4" dt="text" by="1024" sby="210" ne="0"/>
+<httpSample t="1450" it="0" lt="1400" ct="10" ts="1700000001500" s="true" lb="Checkout" rc="200" rm="OK" tn="Load Test 1-3" dt="text" by="4096" sby="260" ne="0"/>
+</testResults>
